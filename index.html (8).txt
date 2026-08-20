@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>TEVORA — Smart Breaks for Smart Teams</title>
+<meta name="description" content="TEVORA corporate tea, coffee and snacks delivery. Smart breaks for smart teams.">
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap');
+
+:root{
+--green:#12372A;
+--green2:#1D4D3A;
+--cream:#F8F5EE;
+--sage:#DCE8DF;
+--gold:#C99A45;
+--white:#fff;
+--black:#171717;
+--gray:#68716B;
+--border:#E7E4DC;
+--shadow:0 20px 60px rgba(18,55,42,.13);
+}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+width:100%;
+min-height:100%;
+font-family:Inter,Arial,sans-serif;
+background:var(--cream);
+color:var(--black);
+}
+
+button,
+input,
+textarea,
+select{
+font:inherit;
+}
+
+button{
+cursor:pointer;
+}
+
+a{
+text-decoration:none;
+color:inherit;
+}
+
+.container{
+width:min(1180px,92%);
+margin:auto;
+}
+
+/* SCREEN */
+
+.screen{
+display:none;
+min-height:100vh;
+}
+
+.screen.active{
+display:block;
+}
+
+/* NAV */
+
+.navbar{
+position:sticky;
+top:0;
+z-index:1000;
+background:rgba(248,245,238,.95);
+backdrop-filter:blur(15px);
+border-bottom:1px solid rgba(0,0,0,.05);
+}
+
+.nav-inner{
+height:72px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.logo{
+font-family:Manrope,sans-serif;
+font-size:25px;
+font-weight:800;
+letter-spacing:4px;
+color:var(--green);
+}
+
+.logo span{
+color:var(--gold);
+}
+
+.nav-links{
+display:none;
+align-items:center;
+gap:28px;
+font-size:13px;
+font-weight:700;
+}
+
+.nav-links a:hover{
+color:var(--gold);
+}
+
+.nav-order{
+border:0;
+background:var(--green);
+color:white;
+padding:11px 18px;
+border-radius:30px;
+font-size:13px;
+font-weight:800;
+}
+
+/* HERO */
+
+.hero{
+padding:55px 0 28px;
+overflow:hidden;
+}
+
+.hero-grid{
+display:grid;
+gap:38px;
+align-items:center;
+}
+
+.hero-copy{
+text-align:center;
+}
+
+.badge{
+display:inline-flex;
+align-items:center;
+gap:7px;
+background:var(--sage);
+color:var(--green);
+padding:8px 14px;
+border-radius:30px;
+font-size:11px;
+font-weight:800;
+margin-bottom:20px;
+}
+
+.hero h1{
+font-family:Manrope,sans-serif;
+color:var(--green);
+font-size:clamp(45px,10vw,84px);
+line-height:1.02;
+letter-spacing:-4px;
+}
+
+.hero h1 span{
+color:var(--gold);
+}
+
+.hero-copy p{
+max-width:620px;
+margin:20px auto;
+color:var(--gray);
+font-size:15px;
+line-height:1.7;
+}
+
+.hero-buttons{
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-top:27px;
+}
+
+.btn{
+border:0;
+padding:15px 24px;
+border-radius:35px;
+font-size:14px;
+font-weight:800;
+transition:.2s;
+display:inline-flex;
+justify-content:center;
+align-items:center;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+}
+
+.btn-primary{
+background:var(--green);
+color:#fff;
+box-shadow:0 12px 25px rgba(18,55,42,.18);
+}
+
+.btn-secondary{
+background:#fff;
+color:var(--green);
+border:1px solid var(--border);
+}
+
+/* HERO IMAGE */
+
+.hero-photo{
+position:relative;
+min-height:300px;
+border-radius:30px;
+overflow:hidden;
+box-shadow:var(--shadow);
+border:5px solid #fff;
+background:#ddd;
+}
+
+.hero-photo img{
+width:100%;
+height:100%;
+min-height:300px;
+object-fit:cover;
+display:block;
+}
+
+.photo-overlay{
+position:absolute;
+inset:0;
+background:linear-gradient(
+180deg,
+rgba(18,55,42,.02),
+rgba(18,55,42,.28)
+);
+}
+
+.time-card{
+position:absolute;
+left:18px;
+bottom:18px;
+background:#fff;
+padding:15px 19px;
+border-radius:18px;
+box-shadow:0 15px 40px rgba(0,0,0,.17);
+}
+
+.time-card strong{
+display:block;
+font-family:Manrope,sans-serif;
+font-size:28px;
+line-height:1;
+color:var(--green);
+}
+
+.time-card small{
+color:var(--gray);
+font-size:11px;
+}
+
+.fresh-card{
+position:absolute;
+right:16px;
+top:16px;
+background:#fff;
+padding:11px 15px;
+border-radius:16px;
+box-shadow:0 12px 30px rgba(0,0,0,.14);
+font-size:12px;
+font-weight:800;
+color:var(--green);
+}
+
+.fresh-card span{
+display:block;
+color:var(--gold);
+font-size:10px;
+margin-top:2px;
+}
+
+/* FEATURES */
+
+.features{
+padding:28px 0 60px;
+}
+
+.feature-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.feature{
+background:#fff;
+border:1px solid var(--border);
+border-radius:18px;
+padding:18px;
+box-shadow:0 8px 20px rgba(60,30,10,.04);
+}
+
+.feature-icon{
+font-size:27px;
+}
+
+.feature h3{
+font-size:13px;
+color:var(--green);
+margin-top:7px;
+}
+
+.feature p{
+font-size:11px;
+color:var(--gray);
+margin-top:3px;
+line-height:1.5;
+}
+
+/* MENU */
+
+.mini-menu{
+background:#fff;
+padding:65px 0;
+}
+
+.section-label{
+color:var(--gold);
+font-size:11px;
+font-weight:800;
+letter-spacing:2px;
+text-transform:uppercase;
+margin-bottom:10px;
+}
+
+.section-title{
+font-family:Manrope,sans-serif;
+color:var(--green);
+font-size:clamp(32px,7vw,55px);
+line-height:1.07;
+letter-spacing:-2px;
+}
+
+.menu-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+margin-top:30px;
+}
+
+.menu-card{
+border:1px solid var(--border);
+border-radius:20px;
+padding:18px;
+background:#fff;
+}
+
+.food-icon{
+height:90px;
+border-radius:15px;
+background:linear-gradient(135deg,#edf4ef,#f8f1df);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:48px;
+}
+
+.menu-card h3{
+font-size:14px;
+color:var(--green);
+margin-top:12px;
+}
+
+.price{
+font-weight:800;
+color:var(--black);
+font-size:13px;
+margin-top:4px;
+}
+
+/* PROMISE */
+
+.promise{
+background:var(--green);
+color:white;
+padding:70px 0;
+text-align:center;
+}
+
+.promise .section-label{
+color:#D8B56C;
+}
+
+.promise .section-title{
+color:white;
+}
+
+.timer{
+font-family:Manrope,sans-serif;
+font-size:clamp(70px,18vw,140px);
+line-height:1;
+letter-spacing:-6px;
+margin:22px 0;
+}
+
+.promise p{
+max-width:570px;
+margin:auto;
+color:#D8E0DB;
+font-size:14px;
+line-height:1.7;
+}
+
+/* ORDER */
+
+#screen2{
+background:linear-gradient(
+135deg,
+#f8f5ee 0%,
+#eaf1eb 100%
+);
+}
+
+.order-page{
+padding:25px 0 50px;
+}
+
+.back-btn{
+border:0;
+background:#fff;
+color:var(--green);
+border:1px solid var(--border);
+padding:10px 15px;
+border-radius:25px;
+font-weight:800;
+font-size:12px;
+}
+
+.order-heading{
+text-align:center;
+padding:25px 0 20px;
+}
+
+.order-heading .badge{
+margin-bottom:12px;
+}
+
+.order-heading h1{
+font-family:Manrope,sans-serif;
+color:var(--green);
+font-size:clamp(34px,8vw,58px);
+letter-spacing:-2px;
+}
+
+.order-heading p{
+color:var(--gray);
+font-size:13px;
+margin-top:8px;
+}
+
+.order-layout{
+display:grid;
+gap:18px;
+}
+
+.order-card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:24px;
+padding:20px;
+box-shadow:0 12px 40px rgba(18,55,42,.07);
+}
+
+.form-title{
+color:var(--green);
+font-weight:800;
+font-size:14px;
+margin-bottom:13px;
+}
+
+.form-group{
+margin-top:12px;
+}
+
+.form-group label{
+display:block;
+font-size:11px;
+font-weight:800;
+color:#4D554F;
+margin-bottom:5px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+width:100%;
+border:1px solid var(--border);
+border-radius:11px;
+padding:12px;
+outline:none;
+background:#fff;
+}
+
+.form-group textarea{
+min-height:90px;
+resize:vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+border-color:var(--green);
+}
+
+.people-counter{
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:var(--cream);
+border:1px solid var(--border);
+border-radius:15px;
+padding:12px 15px;
+}
+
+.counter-label strong{
+display:block;
+color:var(--green);
+font-size:14px;
+}
+
+.counter-label small{
+color:var(--gray);
+font-size:10px;
+}
+
+.counter-controls{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.counter-btn,
+.qty-btn{
+width:34px;
+height:34px;
+border-radius:50%;
+border:1px solid var(--green);
+background:#fff;
+color:var(--green);
+font-weight:800;
+font-size:20px;
+}
+
+.people-number{
+min-width:25px;
+text-align:center;
+font-weight:800;
+color:var(--green);
+}
+
+/* ITEMS */
+
+.item-list{
+display:grid;
+gap:9px;
+}
+
+.order-item{
+border:1px solid var(--border);
+border-radius:14px;
+padding:11px;
+}
+
+.order-item.selected{
+border-color:var(--green);
+background:#F5F9F6;
+}
+
+.item-top{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:8px;
+}
+
+.item-left{
+display:flex;
+align-items:center;
+gap:9px;
+}
+
+.item-check{
+width:19px;
+height:19px;
+accent-color:var(--green);
+}
+
+.item-name{
+font-weight:700;
+color:var(--green);
+font-size:13px;
+}
+
+.item-price{
+font-size:12px;
+color:var(--gray);
+}
+
+.item-quantity{
+display:none;
+align-items:center;
+justify-content:flex-end;
+gap:10px;
+margin-top:9px;
+}
+
+.order-item.selected .item-quantity{
+display:flex;
+}
+
+.qty-number{
+min-width:25px;
+text-align:center;
+font-weight:800;
+}
+
+/* SUMMARY */
+
+.summary{
+margin-top:18px;
+border-radius:17px;
+background:var(--green);
+color:#fff;
+padding:17px;
+}
+
+.summary-title{
+font-weight:800;
+font-size:14px;
+margin-bottom:10px;
+}
+
+.summary-items{
+display:grid;
+gap:7px;
+}
+
+.summary-row{
+display:flex;
+justify-content:space-between;
+gap:10px;
+font-size:12px;
+color:#DCE5DF;
+}
+
+.summary-total{
+border-top:1px solid rgba(255,255,255,.2);
+margin-top:10px;
+padding-top:10px;
+display:flex;
+justify-content:space-between;
+font-size:17px;
+font-weight:800;
+}
+
+.form-submit{
+width:100%;
+margin-top:16px;
+background:var(--gold);
+color:#fff;
+}
+
+.form-submit:disabled{
+opacity:.6;
+cursor:not-allowed;
+}
+
+.notice{
+text-align:center;
+color:var(--gray);
+font-size:10px;
+margin-top:8px;
+}
+
+/* SIDE */
+
+.order-side{
+background:var(--green);
+color:#fff;
+border-radius:24px;
+padding:25px;
+min-height:250px;
+position:relative;
+overflow:hidden;
+}
+
+.order-side:after{
+content:"☕";
+position:absolute;
+right:-20px;
+bottom:-30px;
+font-size:170px;
+opacity:.08;
+}
+
+.order-side h2{
+font-family:Manrope,sans-serif;
+font-size:32px;
+line-height:1.05;
+}
+
+.order-side p{
+color:#D8E0DB;
+font-size:13px;
+margin:12px 0 20px;
+max-width:330px;
+line-height:1.6;
+}
+
+.side-points{
+display:grid;
+gap:10px;
+font-size:12px;
+color:#E8EFEA;
+}
+
+.side-points div{
+display:flex;
+gap:8px;
+align-items:center;
+}
+
+/* WHATSAPP */
+
+.whatsapp{
+position:fixed;
+right:17px;
+bottom:17px;
+width:54px;
+height:54px;
+border-radius:50%;
+background:#25D366;
+color:#fff;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:24px;
+z-index:2000;
+box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+/* POPUP */
+
+.popup{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.55);
+z-index:5000;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.popup.show{
+display:flex;
+}
+
+.popup-box{
+width:min(430px,100%);
+background:#fff;
+border-radius:25px;
+padding:30px 22px;
+text-align:center;
+box-shadow:0 30px 80px rgba(0,0,0,.25);
+}
+
+.success-icon{
+width:70px;
+height:70px;
+border-radius:50%;
+background:var(--sage);
+color:var(--green);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:35px;
+margin:0 auto 15px;
+}
+
+.popup-box h2{
+font-family:Manrope,sans-serif;
+color:var(--green);
+}
+
+.popup-box p{
+color:var(--gray);
+font-size:13px;
+line-height:1.6;
+margin-top:8px;
+}
+
+.order-id-box{
+background:var(--cream);
+border-radius:15px;
+padding:15px;
+margin:18px 0;
+}
+
+.order-id-box small{
+display:block;
+color:var(--gray);
+font-size:10px;
+}
+
+.order-id-box strong{
+display:block;
+color:var(--green);
+font-size:24px;
+margin-top:3px;
+}
+
+.popup-close{
+width:100%;
+border:0;
+border-radius:30px;
+padding:14px;
+background:var(--green);
+color:#fff;
+font-weight:800;
+}
+
+/* DESKTOP */
+
+@media(min-width:768px){
+
+.nav-links{
+display:flex;
+}
+
+.hero{
+padding:80px 0 45px;
+}
+
+.hero-grid{
+grid-template-columns:1fr 1.08fr;
+gap:55px;
+}
+
+.hero-copy{
+text-align:left;
+}
+
+.hero-copy p{
+margin:20px 0;
+}
+
+.hero-buttons{
+flex-direction:row;
+justify-content:flex-start;
+}
+
+.hero-photo{
+min-height:510px;
+}
+
+.hero-photo img{
+min-height:510px;
+}
+
+.feature-grid{
+grid-template-columns:repeat(4,1fr);
+}
+
+.menu-grid{
+grid-template-columns:repeat(4,1fr);
+}
+
+.order-layout{
+grid-template-columns:1.2fr .8fr;
+align-items:start;
+}
+
+.order-side{
+position:sticky;
+top:95px;
+}
+}
+
+@media(max-width:430px){
+
+.nav-links{
+display:none;
+}
+
+.feature-grid{
+grid-template-columns:1fr 1fr;
+}
+
+.menu-grid{
+grid-template-columns:1fr 1fr;
+}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= SCREEN 1 ================= -->
+
+<div id="screen1" class="screen active">
+
+<header class="navbar">
+<div class="container nav-inner">
+
+<a href="#" class="logo" onclick="showScreen(1);return false;">
+TEV<span>O</span>RA
+</a>
+
+<nav class="nav-links">
+<a href="#menu">Menu</a>
+<a href="#promise">5 Minutes</a>
+<a href="#" onclick="showScreen(2);return false;">Order</a>
+</nav>
+
+<button class="nav-order" onclick="showScreen(2)">
+Order Now
+</button>
+
+</div>
+</header>
+
+<section class="hero">
+
+<div class="container hero-grid">
+
+<div class="hero-copy">
+
+<div class="badge">
+☕ CORPORATE BREAK DELIVERY
+</div>
+
+<h1>
+Smart Breaks for
+<span>Smart Teams.</span>
+</h1>
+
+<p>
+Fresh tea, coffee and tasty snacks made for modern workplaces.
+Simple ordering, reasonable prices and fast corporate delivery.
+</p>
+
+<div class="hero-buttons">
+
+<button class="btn btn-primary" onclick="showScreen(2)">
+ORDER NOW →
+</button>
+
+<a class="btn btn-secondary" href="#menu">
+VIEW MENU
+</a>
+
+</div>
+
+</div>
+
+<div class="hero-photo">
+
+<img
+src="https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&w=1200&q=85"
+alt="Tea and coffee"
+>
+
+<div class="photo-overlay"></div>
+
+<div class="time-card">
+<strong>5 min</strong>
+<small>Smart break</small>
+</div>
+
+<div class="fresh-card">
+FRESH DAILY
+<span>Made for teams</span>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="features">
+
+<div class="container feature-grid">
+
+<div class="feature">
+<div class="feature-icon">☕</div>
+<h3>Fresh Drinks</h3>
+<p>Tea and coffee prepared fresh.</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">🥪</div>
+<h3>Tasty Snacks</h3>
+<p>Perfect office break options.</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">⚡</div>
+<h3>Fast Delivery</h3>
+<p>Quick corporate delivery.</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">💼</div>
+<h3>Corporate Ready</h3>
+<p>Easy bulk office ordering.</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="mini-menu" id="menu">
+
+<div class="container">
+
+<div class="section-label">
+OUR MENU
+</div>
+
+<h2 class="section-title">
+Simple. Fresh.<br>
+Delicious.
+</h2>
+
+<div class="menu-grid">
+
+<div class="menu-card">
+<div class="food-icon">☕</div>
+<h3>Tea</h3>
+<div class="price">₹15 / cup</div>
+</div>
+
+<div class="menu-card">
+<div class="food-icon">🍵</div>
+<h3>Green Tea</h3>
+<div class="price">₹20 / cup</div>
+</div>
+
+<div class="menu-card">
+<div class="food-icon">☕</div>
+<h3>Coffee</h3>
+<div class="price">₹25 / cup</div>
+</div>
+
+<div class="menu-card">
+<div class="food-icon">🥪</div>
+<h3>Snacks</h3>
+<div class="price">₹40 / plate</div>
+</div>
+
+</div>
+
+<div style="margin-top:30px;text-align:center;">
+<button class="btn btn-primary" onclick="showScreen(2)">
+CREATE BOOKING →
+</button>
+</div>
+
+</div>
+
+</section>
+
+<section class="promise" id="promise">
+
+<div class="container">
+
+<div class="section-label">
+TEVORA PROMISE
+</div>
+
+<h2 class="section-title">
+Your break.<br>
+Our priority.
+</h2>
+
+<div class="timer">
+5:00
+</div>
+
+<p>
+We make corporate tea, coffee and snack ordering simple,
+reliable and convenient for every workplace.
+</p>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- ================= SCREEN 2 ================= -->
+
+<div id="screen2" class="screen">
+
+<section class="order-page">
+
+<div class="container">
+
+<button class="back-btn" onclick="showScreen(1)">
+← Back
+</button>
+
+<div class="order-heading">
+
+<div class="badge">
+☕ TEVORA BOOKING
+</div>
+
+<h1>
+Make Your Break.
+</h1>
+
+<p>
+Tell us what your team needs and we'll take care of the rest.
+</p>
+
+</div>
+
+
+<div class="order-layout">
+
+<!-- FORM -->
+
+<div class="order-card">
+
+<form id="bookingForm">
+
+<div class="form-title">
+Company Details
+</div>
+
+<div class="form-group">
+
+<label>
+Company Name *
+</label>
+
+<input
+type="text"
+id="companyName"
+required
+placeholder="ABC Technologies"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Contact Person *
+</label>
+
+<input
+type="text"
+id="contactPerson"
+required
+placeholder="Your name"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Mobile *
+</label>
+
+<input
+type="tel"
+id="mobile"
+required
+pattern="[0-9]{10}"
+maxlength="10"
+placeholder="9876543210"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Office Location *
+</label>
+
+<input
+type="text"
+id="officeLocation"
+required
+placeholder="Office address / location"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Number of People *
+</label>
+
+<div class="people-counter">
+
+<div class="counter-label">
+<strong>Team Size</strong>
+<small>Number of people</small>
+</div>
+
+<div class="counter-controls">
+
+<button
+type="button"
+class="counter-btn"
+onclick="changePeople(-1)"
+>
+−
+</button>
+
+<span
+id="peopleNumber"
+class="people-number"
+>
+1
+</span>
+
+<button
+type="button"
+class="counter-btn"
+onclick="changePeople(1)"
+>
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="form-title" style="margin-top:25px;">
+Delivery Details
+</div>
+
+
+<div class="form-group">
+
+<label>
+Delivery Date *
+</label>
+
+<input
+type="date"
+id="deliveryDate"
+required
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Delivery Time *
+</label>
+
+<input
+type="time"
+id="deliveryTime"
+required
+>
+
+</div>
+
+
+<div class="form-title" style="margin-top:25px;">
+Select Items
+</div>
+
+
+<div class="item-list">
+
+<!-- TEA -->
+
+<div class="order-item" id="item-tea">
+
+<div class="item-top">
+
+<div class="item-left">
+
+<input
+class="item-check"
+type="checkbox"
+id="check-tea"
+onchange="toggleItem('tea')"
+>
+
+<div>
+<div class="item-name">
+Tea
+</div>
+<div class="item-price">
+₹15
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="item-quantity">
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('tea',-1)"
+>
+−
+</button>
+
+<span
+class="qty-number"
+id="qty-tea"
+>
+1
+</span>
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('tea',1)"
+>
++
+</button>
+
+</div>
+
+</div>
+
+
+<!-- GREEN TEA -->
+
+<div class="order-item" id="item-greenTea">
+
+<div class="item-top">
+
+<div class="item-left">
+
+<input
+class="item-check"
+type="checkbox"
+id="check-greenTea"
+onchange="toggleItem('greenTea')"
+>
+
+<div>
+<div class="item-name">
+Green Tea
+</div>
+<div class="item-price">
+₹20
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="item-quantity">
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('greenTea',-1)"
+>
+−
+</button>
+
+<span
+class="qty-number"
+id="qty-greenTea"
+>
+1
+</span>
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('greenTea',1)"
+>
++
+</button>
+
+</div>
+
+</div>
+
+
+<!-- COFFEE -->
+
+<div class="order-item" id="item-coffee">
+
+<div class="item-top">
+
+<div class="item-left">
+
+<input
+class="item-check"
+type="checkbox"
+id="check-coffee"
+onchange="toggleItem('coffee')"
+>
+
+<div>
+<div class="item-name">
+Coffee
+</div>
+<div class="item-price">
+₹25
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="item-quantity">
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('coffee',-1)"
+>
+−
+</button>
+
+<span
+class="qty-number"
+id="qty-coffee"
+>
+1
+</span>
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('coffee',1)"
+>
++
+</button>
+
+</div>
+
+</div>
+
+
+<!-- SNACKS -->
+
+<div class="order-item" id="item-snacks">
+
+<div class="item-top">
+
+<div class="item-left">
+
+<input
+class="item-check"
+type="checkbox"
+id="check-snacks"
+onchange="toggleItem('snacks')"
+>
+
+<div>
+<div class="item-name">
+Snacks
+</div>
+<div class="item-price">
+₹40
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="item-quantity">
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('snacks',-1)"
+>
+−
+</button>
+
+<span
+class="qty-number"
+id="qty-snacks"
+>
+1
+</span>
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('snacks',1)"
+>
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Note
+</label>
+
+<textarea
+id="note"
+placeholder="Any special requirement..."
+></textarea>
+
+</div>
+
+
+<!-- SUMMARY -->
+
+<div class="summary">
+
+<div class="summary-title">
+Booking Summary
+</div>
+
+<div
+id="summaryItems"
+class="summary-items"
+>
+<div class="summary-row">
+<span>No items selected</span>
+<span>₹0</span>
+</div>
+</div>
+
+<div class="summary-total">
+
+<span>
+Total
+</span>
+
+<span id="totalAmount">
+₹0
+</span>
+
+</div>
+
+</div>
+
+
+<button
+type="submit"
+id="submitButton"
+class="btn form-submit"
+>
+CONFIRM BOOKING →
+</button>
+
+<div class="notice">
+Your booking details will be securely saved.
+</div>
+
+</form>
+
+</div>
+
+
+<!-- SIDE -->
+
+<div class="order-side">
+
+<h2>
+Smart breaks<br>
+start here.
+</h2>
+
+<p>
+TEVORA makes corporate refreshments simple,
+quick and reliable.
+</p>
+
+<div class="side-points">
+
+<div>
+✓ Freshly prepared
+</div>
+
+<div>
+✓ Corporate bulk orders
+</div>
+
+<div>
+✓ Easy booking
+</div>
+
+<div>
+✓ Fast delivery
+</div>
+
+<div>
+✓ Simple pricing
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- WHATSAPP -->
+
+<a
+class="whatsapp"
+href="https://wa.me/9701508591"
+target="_blank"
+aria-label="WhatsApp"
+>
+☎
+</a>
+
+
+<!-- SUCCESS POPUP -->
+
+<div
+id="successPopup"
+class="popup"
+>
+
+<div class="popup-box">
+
+<div class="success-icon">
+✓
+</div>
+
+<h2>
+Booking Confirmed!
+</h2>
+
+<p>
+Your TEVORA booking has been received successfully.
+</p>
+
+<div class="order-id-box">
+
+<small>
+ORDER ID
+</small>
+
+<strong id="popupOrderId">
+TVR-000000
+</strong>
+
+</div>
+
+<p>
+Status: <strong>Pending</strong>
+</p>
+
+<button
+class="popup-close"
+onclick="closePopup()"
+>
+DONE
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+SUPABASE CONNECTION
+========================================================= */
+
+const SUPABASE_URL =
+"https://eaowxilhfzyukzetgqxo.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2b3d4aWxoZnp5dWt6ZXRncXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMTE1OTMsImV4cCI6MjEwMjc4NzU5M30.JL4kycMDU-b11V0bFDYTwkTsi2XMEmO7lRnJLnsO16A";
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+
+/* =========================================================
+SCREEN SWITCH
+========================================================= */
+
+function showScreen(number){
+
+document
+.querySelectorAll(".screen")
+.forEach(screen => {
+screen.classList.remove("active");
+});
+
+document
+.getElementById("screen" + number)
+.classList.add("active");
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+}
+
+
+/* =========================================================
+PEOPLE COUNTER
+========================================================= */
+
+let people = 1;
+
+function changePeople(amount){
+
+people += amount;
+
+if(people < 1){
+people = 1;
+}
+
+if(people > 1000){
+people = 1000;
+}
+
+document.getElementById("peopleNumber").textContent =
+people;
+}
+
+
+/* =========================================================
+ITEMS
+========================================================= */
+
+const products = {
+
+tea:{
+name:"Tea",
+price:15,
+qty:1
+},
+
+greenTea:{
+name:"Green Tea",
+price:20,
+qty:1
+},
+
+coffee:{
+name:"Coffee",
+price:25,
+qty:1
+},
+
+snacks:{
+name:"Snacks",
+price:40,
+qty:1
+}
+
+};
+
+
+function toggleItem(item){
+
+const checkbox =
+document.getElementById("check-" + item);
+
+const card =
+document.getElementById("item-" + item);
+
+if(checkbox.checked){
+
+card.classList.add("selected");
+
+if(products[item].qty < 1){
+products[item].qty = 1;
+}
+
+}else{
+
+card.classList.remove("selected");
+
+}
+
+updateSummary();
+}
+
+
+function changeQty(item, amount){
+
+products[item].qty += amount;
+
+if(products[item].qty < 1){
+products[item].qty = 1;
+}
+
+if(products[item].qty > 1000){
+products[item].qty = 1000;
+}
+
+document.getElementById(
+"qty-" + item
+).textContent = products[item].qty;
+
+updateSummary();
+}
+
+
+/* =========================================================
+SUMMARY
+========================================================= */
+
+function getSelectedItems(){
+
+const selected = [];
+
+Object.keys(products).forEach(item => {
+
+const checkbox =
+document.getElementById("check-" + item);
+
+if(checkbox.checked){
+
+selected.push({
+key:item,
+name:products[item].name,
+price:products[item].price,
+qty:products[item].qty
+});
+
+}
+
+});
+
+return selected;
+}
+
+
+function calculateTotal(){
+
+let total = 0;
+
+getSelectedItems().forEach(item => {
+
+total += item.price * item.qty;
+
+});
+
+return total;
+}
+
+
+function updateSummary(){
+
+const summary =
+document.getElementById("summaryItems");
+
+const total =
+document.getElementById("totalAmount");
+
+const selected =
+getSelectedItems();
+
+if(selected.length === 0){
+
+summary.innerHTML = `
+<div class="summary-row">
+<span>No items selected</span>
+<span>₹0</span>
+</div>
+`;
+
+total.textContent = "₹0";
+
+return;
+}
+
+
+summary.innerHTML = "";
+
+selected.forEach(item => {
+
+const row =
+document.createElement("div");
+
+row.className = "summary-row";
+
+row.innerHTML = `
+<span>
+${item.name} × ${item.qty}
+</span>
+
+<span>
+₹${item.price * item.qty}
+</span>
+`;
+
+summary.appendChild(row);
+
+});
+
+
+total.textContent =
+"₹" + calculateTotal();
+}
+
+
+/* =========================================================
+ORDER ID
+========================================================= */
+
+function generateOrderId(){
+
+const random =
+Math.floor(
+1000 +
+Math.random() * 9000
+);
+
+return "TVR-" + Date.now().toString().slice(-6) + random;
+}
+
+
+/* =========================================================
+FORM SUBMIT
+========================================================= */
+
+document
+.getElementById("bookingForm")
+.addEventListener("submit", async function(event){
+
+event.preventDefault();
+
+
+const selectedItems =
+getSelectedItems();
+
+
+if(selectedItems.length === 0){
+
+alert(
+"Please select at least one item."
+);
+
+return;
+}
+
+
+const companyName =
+document
+.getElementById("companyName")
+.value
+.trim();
+
+
+const contactPerson =
+document
+.getElementById("contactPerson")
+.value
+.trim();
+
+
+const mobile =
+document
+.getElementById("mobile")
+.value
+.trim();
+
+
+const officeLocation =
+document
+.getElementById("officeLocation")
+.value
+.trim();
+
+
+const deliveryDate =
+document
+.getElementById("deliveryDate")
+.value;
+
+
+const deliveryTime =
+document
+.getElementById("deliveryTime")
+.value;
+
+
+const note =
+document
+.getElementById("note")
+.value
+.trim();
+
+
+const totalAmount =
+calculateTotal();
+
+
+const orderId =
+generateOrderId();
+
+
+const itemsText =
+selectedItems
+.map(item =>
+`${item.name} x ${item.qty}`
+)
+.join(", ");
+
+
+const submitButton =
+document.getElementById("submitButton");
+
+
+submitButton.disabled = true;
+
+submitButton.textContent =
+"SAVING BOOKING...";
+
+
+try{
+
+const bookingData = {
+
+"Order ID": orderId,
+
+"Date & Time":
+new Date().toISOString(),
+
+"Company Name":
+companyName,
+
+"Contact Person":
+contactPerson,
+
+"Mobile":
+mobile,
+
+"Office Location":
+officeLocation,
+
+"People":
+people,
+
+"Items":
+itemsText,
+
+"Total Amount":
+totalAmount,
+
+"Delivery Date":
+deliveryDate,
+
+"Delivery Time":
+deliveryTime,
+
+"Note":
+note,
+
+"Status":
+"Pending"
+
+};
+
+
+const {
+data,
+error
+} = await supabaseClient
+
+.from("bookings")
+
+.insert([bookingData])
+
+.select();
+
+
+if(error){
+
+console.error(
+"SUPABASE ERROR:",
+error
+);
+
+throw error;
+}
+
+
+/* SUCCESS */
+
+document
+.getElementById("popupOrderId")
+.textContent = orderId;
+
+
+document
+.getElementById("successPopup")
+.classList.add("show");
+
+
+/* RESET FORM */
+
+document
+.getElementById("bookingForm")
+.reset();
+
+
+people = 1;
+
+document
+.getElementById("peopleNumber")
+.textContent = "1";
+
+
+Object.keys(products)
+.forEach(item => {
+
+products[item].qty = 1;
+
+document
+.getElementById(
+"qty-" + item
+)
+.textContent = "1";
+
+document
+.getElementById(
+"item-" + item
+)
+.classList.remove("selected");
+
+});
+
+
+updateSummary();
+
+
+}catch(error){
+
+alert(
+"❌ Booking failed.\n\n" +
+error.message
+);
+
+}finally{
+
+submitButton.disabled = false;
+
+submitButton.textContent =
+"CONFIRM BOOKING →";
+
+}
+
+});
+
+
+/* =========================================================
+POPUP
+========================================================= */
+
+function closePopup(){
+
+document
+.getElementById("successPopup")
+.classList.remove("show");
+
+}
+
+
+/* =========================================================
+MINIMUM DATE = TODAY
+========================================================= */
+
+const today =
+new Date().toISOString().split("T")[0];
+
+document
+.getElementById("deliveryDate")
+.setAttribute(
+"min",
+today
+);
+
+
+/* INITIAL SUMMARY */
+
+updateSummary();
+
+</script>
+
+</body>
+</html>
